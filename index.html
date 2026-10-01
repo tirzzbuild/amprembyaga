@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alight Premium — Comic Edition</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red: #e11d48;
+      --blue: #2563eb;
+      --yellow: #facc15;
+      --cream: #fff7ed;
+      --ink: #1c1917;
+      --panel: #ffffff;
+      --muted: #57534e;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Comic Neue', cursive, sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      overflow-x: hidden;
+      min-height: 100vh;
+      background-image:
+        radial-gradient(circle, #1c1917 1px, transparent 1px);
+      background-size: 12px 12px;
+      background-color: #fef3c7;
+    }
+
+    /* Halftone overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(0,0,0,0.03) 2px,
+          rgba(0,0,0,0.03) 4px
+        );
+      pointer-events: none;
+    }
+
+    /* Comic burst shapes */
+    .burst {
+      position: fixed;
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0.15;
+      font-size: 8rem;
+      animation: spinBurst 30s linear infinite;
+    }
+    .burst-1 { top: 5%; left: -5%; color: var(--red); }
+    .burst-2 { top: 40%; right: -8%; color: var(--blue); animation-direction: reverse; font-size: 10rem; }
+    .burst-3 { bottom: 10%; left: 10%; color: var(--yellow); font-size: 6rem; }
+
+    @keyframes spinBurst {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Spidey decorations */
+    .spidey {
+      position: fixed;
+      z-index: 2;
+      width: 110px;
+      opacity: 0.9;
+      pointer-events: none;
+      filter: drop-shadow(4px 4px 0 #000);
+      animation: bounceSpidey 3s ease-in-out infinite;
+    }
+    .spidey-l { left: 8px; top: 20%; transform: scaleX(-1); }
+    .spidey-r { right: 8px; top: 50%; animation-delay: -1.5s; }
+    @keyframes bounceSpidey {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+    .spidey-l { animation-name: bounceSpideyL; }
+    @keyframes bounceSpideyL {
+      0%, 100% { transform: scaleX(-1) translateY(0); }
+      50% { transform: scaleX(-1) translateY(-12px); }
+    }
+
+    /* NAV */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--ink);
+      border-bottom: 5px solid var(--red);
+      padding: 0.75rem 4%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 6px 0 rgba(0,0,0,0.2);
+    }
+    .logo {
+      font-family: 'Bangers', system-ui;
+      font-size: 1.6rem;
+      color: var(--yellow);
+      letter-spacing: 2px;
+      text-shadow: 3px 3px 0 var(--red);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .nav-links {
+      display: flex;
+      gap: 1.2rem;
+      list-style: none;
+      align-items: center;
+    }
+    .nav-links a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--yellow); }
+    .nav-cta {
+      background: var(--red) !important;
+      color: #fff !important;
+      padding: 0.45rem 1rem;
+      border: 3px solid #000;
+      border-radius: 8px;
+      box-shadow: 3px 3px 0 #000;
+      font-family: 'Bangers', system-ui;
+      letter-spacing: 1px;
+      font-size: 1rem !important;
+    }
+    .nav-cta:hover {
+      background: var(--yellow) !important;
+      color: #000 !important;
+      transform: translate(-2px, -2px);
+      box-shadow: 5px 5px 0 #000;
+    }
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+    }
+    .hamburger span {
+      width: 26px;
+      height: 3px;
+      background: var(--yellow);
+      border-radius: 2px;
+    }
+
+    /* HERO - comic panel */
+    .hero {
+      padding: 2.5rem 4% 2rem;
+      display: flex;
+      justify-content: center;
+    }
+    .hero-panel {
+      max-width: 720px;
+      width: 100%;
+      background: #fff;
+      border: 5px solid #000;
+      border-radius: 12px;
+      box-shadow: 10px 10px 0 #000;
+      padding: 2rem 1.75rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 20% 20%, rgba(250,204,21,0.25), transparent 40%),
+                  radial-gradient(circle at 80% 70%, rgba(37,99,235,0.15), transparent 40%);
+      pointer-events: none;
+    }
+    .badge {
+      display: inline-block;
+      background: var(--yellow);
+      color: #000;
+      font-family: 'Bangers', system-ui;
+      font-size: 1rem;
+      letter-spacing: 1px;
+      padding: 0.35rem 1rem;
+      border: 3px solid #000;
+      border-radius: 999px;
+      box-shadow: 3px 3px 0 #000;
+      margin-bottom: 1.2rem;
+      position: relative;
+      z-index: 1;
+    }
+    .hero h1 {
+      font-family: 'Bangers', system-ui;
+      font-size: clamp(2.4rem, 8vw, 3.8rem);
+      line-height: 1.05;
+      letter-spacing: 2px;
+      color: var(--red);
+      text-shadow: 4px 4px 0 #000;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+    .hero h1 span {
+      color: var(--blue);
+      display: block;
+    }
+    .hero p {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--muted);
+      max-width: 480px;
+      margin: 0 auto 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Comic buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.75rem 1.4rem;
+      font-family: 'Bangers', system-ui;
+      font-size: 1.15rem;
+      letter-spacing: 1px;
+      border: 3px solid #000;
+      border-radius: 10px;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 4px 4px 0 #000;
+      transition: all 0.15s;
+      color: #000;
+    }
+    .btn:active {
+      transform: translate(3px, 3px);
+      box-shadow: 1px 1px 0 #000;
+    }
+    .btn-primary {
+      background: var(--red);
+      color: #fff;
+    }
+    .btn-primary:hover { background: #be123c; }
+    .btn-blue {
+      background: var(--blue);
+      color: #fff;
+    }
+    .btn-blue:hover { background: #1d4ed8; }
+    .btn-yellow {
+      background: var(--yellow);
+      color: #000;
+    }
+    .btn-ghost {
+      background: #fff;
+      color: #000;
+    }
+
+    /* Section title comic style */
+    section { padding: 2.5rem 4%; }
+    .section-title {
+      text-align: center;
+      margin-bottom: 1.75rem;
+    }
+    .section-title h2 {
+      font-family: 'Bangers', system-ui;
+      font-size: clamp(1.8rem, 5vw, 2.6rem);
+      letter-spacing: 2px;
+      color: var(--ink);
+      text-shadow: 3px 3px 0 var(--yellow);
+      display: inline-block;
+      background: #fff;
+      border: 4px solid #000;
+      padding: 0.3rem 1.2rem;
+      border-radius: 8px;
+      box-shadow: 5px 5px 0 #000;
+    }
+    .section-title p {
+      margin-top: 0.75rem;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    /* Comic panel grid */
+    .panels {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .panel {
+      background: #fff;
+      border: 4px solid #000;
+      border-radius: 10px;
+      box-shadow: 6px 6px 0 #000;
+      padding: 1.4rem;
+      transition: transform 0.15s;
+      position: relative;
+    }
+    .panel:hover {
+      transform: translate(-3px, -3px);
+      box-shadow: 9px 9px 0 #000;
+    }
+    .panel-icon {
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+    .panel h3 {
+      font-family: 'Bangers', system-ui;
+      font-size: 1.35rem;
+      letter-spacing: 1px;
+      margin-bottom: 0.35rem;
+      color: var(--red);
+    }
+    .panel p {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    /* Steps as comic strip */
+    .strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .strip-cell {
+      background: #fff;
+      border: 4px solid #000;
+      border-radius: 10px;
+      padding: 1.3rem;
+      text-align: center;
+      box-shadow: 5px 5px 0 #000;
+      position: relative;
+    }
+    .strip-num {
+      width: 48px;
+      height: 48px;
+      background: var(--yellow);
+      border: 3px solid #000;
+      border-radius: 50%;
+      font-family: 'Bangers', system-ui;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 0.75rem;
+      box-shadow: 3px 3px 0 #000;
+    }
+    .strip-cell h3 {
+      font-family: 'Bangers', system-ui;
+      font-size: 1.25rem;
+      letter-spacing: 1px;
+      margin-bottom: 0.3rem;
+    }
+    .strip-cell p {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    /* TOOL - big comic card */
+    .tool-wrap {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    .tool-card {
+      background: #fff;
+      border: 5px solid #000;
+      border-radius: 14px;
+      box-shadow: 10px 10px 0 #000;
+      padding: 1.75rem;
+      position: relative;
+    }
+    .tool-card::after {
+      content: 'POW!';
+      position: absolute;
+      top: -18px;
+      right: 16px;
+      font-family: 'Bangers', system-ui;
+      font-size: 1.4rem;
+      background: var(--red);
+      color: #fff;
+      border: 3px solid #000;
+      padding: 0.15rem 0.6rem;
+      border-radius: 8px;
+      box-shadow: 3px 3px 0 #000;
+      transform: rotate(8deg);
+    }
+    .tool-header {
+      text-align: center;
+      margin-bottom: 1.25rem;
+    }
+    .tool-header .mascot {
+      font-size: 3rem;
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+    .tool-header h3 {
+      font-family: 'Bangers', system-ui;
+      font-size: 1.6rem;
+      letter-spacing: 1px;
+      color: var(--blue);
+    }
+    .tool-header p {
+      font-weight: 700;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    /* Progress comic dots */
+    .progress {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1.4rem;
+      position: relative;
+    }
+    .progress::before {
+      content: '';
+      position: absolute;
+      top: 16px;
+      left: 16%;
+      right: 16%;
+      height: 4px;
+      background: #000;
+      z-index: 0;
+    }
+    .progress-fill {
+      position: absolute;
+      top: 16px;
+      left: 16%;
+      height: 4px;
+      background: var(--red);
+      z-index: 1;
+      width: 0%;
+      transition: width 0.4s;
+    }
+    .p-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.3rem;
+      z-index: 2;
+      width: 33%;
+    }
+    .p-step .circle {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #fff;
+      border: 3px solid #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Bangers', system-ui;
+      font-size: 1rem;
+      box-shadow: 2px 2px 0 #000;
+    }
+    .p-step.active .circle {
+      background: var(--yellow);
+      transform: scale(1.15);
+    }
+    .p-step.done .circle {
+      background: #4ade80;
+    }
+    .p-step span {
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .form-group { margin-bottom: 1rem; }
+    .form-group label {
+      display: block;
+      font-family: 'Bangers', system-ui;
+      font-size: 1.05rem;
+      letter-spacing: 1px;
+      margin-bottom: 0.35rem;
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      border: 3px solid #000;
+      border-radius: 10px;
+      font-family: 'Comic Neue', cursive;
+      font-size: 1rem;
+      font-weight: 700;
+      background: #fffbeb;
+      outline: none;
+      box-shadow: 3px 3px 0 #000;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus {
+      background: #fff;
+      box-shadow: 4px 4px 0 var(--blue);
+    }
+    .form-group textarea { min-height: 90px; resize: vertical; }
+    .form-hint {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--muted);
+      margin-top: 0.35rem;
+    }
+    .btn-full {
+      width: 100%;
+      justify-content: center;
+      margin-top: 0.25rem;
+    }
+    .btn-full + .btn-full { margin-top: 0.55rem; }
+
+    .working {
+      display: none;
+      text-align: center;
+      padding: 1.2rem 0;
+    }
+    .working.active { display: block; }
+    .working-emoji {
+      font-size: 3rem;
+      display: block;
+      animation: shake 0.5s ease-in-out infinite;
+    }
+    @keyframes shake {
+      0%, 100% { transform: rotate(-8deg); }
+      50% { transform: rotate(8deg); }
+    }
+    .working-title {
+      font-family: 'Bangers', system-ui;
+      font-size: 1.3rem;
+      letter-spacing: 1px;
+      color: var(--red);
+    }
+    .working-sub { font-weight: 700; color: var(--muted); }
+
+    .result {
+      display: none;
+      padding: 1rem;
+      border: 3px solid #000;
+      border-radius: 10px;
+      font-weight: 700;
+      margin-top: 1rem;
+      box-shadow: 3px 3px 0 #000;
+    }
+    .result.show { display: block; }
+    .result.success { background: #dcfce7; }
+    .result.error { background: #fee2e2; }
+    .result.info { background: #dbeafe; }
+
+    .success-icon {
+      font-size: 3rem;
+      display: block;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Speech bubble FAQ */
+    .faq-list {
+      max-width: 680px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .faq-item {
+      background: #fff;
+      border: 4px solid #000;
+      border-radius: 12px;
+      box-shadow: 4px 4px 0 #000;
+      overflow: hidden;
+    }
+    .faq-q {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.2rem;
+      background: transparent;
+      border: none;
+      font-family: 'Comic Neue', cursive;
+      font-weight: 700;
+      font-size: 1rem;
+      text-align: left;
+      cursor: pointer;
+      color: var(--ink);
+    }
+    .faq-icon {
+      font-family: 'Bangers', system-ui;
+      font-size: 1.4rem;
+      color: var(--red);
+    }
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s;
+    }
+    .faq-item.open .faq-a { max-height: 200px; }
+    .faq-a p {
+      padding: 0 1.2rem 1rem;
+      font-weight: 700;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    /* About */
+    .about-box {
+      max-width: 700px;
+      margin: 0 auto;
+      background: #fff;
+      border: 5px solid #000;
+      border-radius: 14px;
+      box-shadow: 8px 8px 0 #000;
+      padding: 1.75rem;
+      text-align: center;
+    }
+    .about-box h3 {
+      font-family: 'Bangers', system-ui;
+      font-size: 1.6rem;
+      letter-spacing: 1px;
+      margin-bottom: 0.75rem;
+      color: var(--blue);
+    }
+    .about-box p {
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+      line-height: 1.5;
+    }
+    .dev-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+    .dev-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--yellow);
+      border: 3px solid #000;
+      border-radius: 999px;
+      padding: 0.4rem 0.9rem;
+      text-decoration: none;
+      color: #000;
+      font-weight: 700;
+      font-size: 0.9rem;
+      box-shadow: 2px 2px 0 #000;
+    }
+    .dev-chip:hover {
+      background: var(--red);
+      color: #fff;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--ink);
+      color: #fff;
+      text-align: center;
+      padding: 2rem 4%;
+      border-top: 5px solid var(--yellow);
+      margin-top: 1rem;
+    }
+    footer .logo {
+      justify-content: center;
+      margin-bottom: 0.5rem;
+    }
+    footer p {
+      font-weight: 700;
+      color: #a8a29e;
+      margin-bottom: 0.75rem;
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.75rem;
+    }
+    .footer-links a {
+      color: var(--yellow);
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .copy { font-size: 0.8rem; color: #78716c; font-weight: 700; }
+
+    /* Toast comic */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #fff;
+      border: 4px solid #000;
+      border-radius: 12px;
+      padding: 0.85rem 1.2rem;
+      font-weight: 700;
+      z-index: 200;
+      box-shadow: 5px 5px 0 #000;
+      transform: translateY(150%);
+      transition: transform 0.35s cubic-bezier(0.34, 1.5, 0.64, 1);
+      max-width: 320px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .toast.show { transform: translateY(0); }
+    .toast.success { background: #dcfce7; }
+    .toast.error { background: #fee2e2; }
+    .toast.info { background: #dbeafe; }
+
+    .loader {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(254, 243, 199, 0.92);
+      z-index: 150;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .loader.active { display: flex; }
+    .loader-emoji { font-size: 4rem; animation: shake 0.4s infinite; }
+    .loader-text {
+      font-family: 'Bangers', system-ui;
+      font-size: 1.5rem;
+      letter-spacing: 2px;
+      color: var(--red);
+      text-shadow: 2px 2px 0 #000;
+    }
+
+    /* BAM sticker */
+    .bam {
+      position: absolute;
+      font-family: 'Bangers', system-ui;
+      color: var(--yellow);
+      text-shadow: 2px 2px 0 #000;
+      font-size: 1.2rem;
+      transform: rotate(-12deg);
+      pointer-events: none;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        position: fixed;
+        top: 0; right: -100%;
+        width: 70%;
+        height: 100vh;
+        background: var(--ink);
+        flex-direction: column;
+        padding: 5rem 1.5rem 2rem;
+        gap: 1.2rem;
+        transition: right 0.3s;
+        border-left: 4px solid var(--red);
+      }
+      .nav-links.open { right: 0; }
+      .hamburger { display: flex; }
+      .spidey { width: 70px; opacity: 0.7; }
+      .hero-panel { box-shadow: 6px 6px 0 #000; }
+      .tool-card { box-shadow: 6px 6px 0 #000; }
+    }
+
+    /* ===== Extra polish & motion ===== */
+    .hero-panel {
+      animation: panelIn 0.6s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+    }
+    @keyframes panelIn {
+      from { opacity: 0; transform: scale(0.9) rotate(-2deg); }
+      to { opacity: 1; transform: scale(1) rotate(0); }
+    }
+
+    .panel, .strip-cell {
+      animation: cardPop 0.5s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+    }
+    .panels .panel:nth-child(1) { animation-delay: 0.05s; }
+    .panels .panel:nth-child(2) { animation-delay: 0.1s; }
+    .panels .panel:nth-child(3) { animation-delay: 0.15s; }
+    .panels .panel:nth-child(4) { animation-delay: 0.2s; }
+    .panels .panel:nth-child(5) { animation-delay: 0.25s; }
+    .panels .panel:nth-child(6) { animation-delay: 0.3s; }
+    .strip .strip-cell:nth-child(1) { animation-delay: 0.1s; }
+    .strip .strip-cell:nth-child(2) { animation-delay: 0.2s; }
+    .strip .strip-cell:nth-child(3) { animation-delay: 0.3s; }
+
+    @keyframes cardPop {
+      from { opacity: 0; transform: translateY(20px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Floating comic stickers */
+    .sticker {
+      position: fixed;
+      z-index: 3;
+      font-family: 'Bangers', system-ui;
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+      padding: 0.25rem 0.55rem;
+      border: 3px solid #000;
+      border-radius: 8px;
+      box-shadow: 3px 3px 0 #000;
+      pointer-events: none;
+      animation: stickerFloat 5s ease-in-out infinite;
+    }
+    .sticker-1 { top: 18%; left: 4%; background: var(--yellow); color: #000; transform: rotate(-12deg); animation-delay: 0s; }
+    .sticker-2 { top: 35%; right: 3%; background: var(--red); color: #fff; transform: rotate(10deg); animation-delay: -1.5s; }
+    .sticker-3 { top: 65%; left: 3%; background: var(--blue); color: #fff; transform: rotate(-8deg); animation-delay: -3s; }
+    .sticker-4 { bottom: 18%; right: 5%; background: var(--yellow); color: #000; transform: rotate(6deg); animation-delay: -2s; }
+
+    @keyframes stickerFloat {
+      0%, 100% { translate: 0 0; }
+      50% { translate: 0 -10px; }
+    }
+
+    /* Speed lines on hero */
+    .hero-panel::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 8px,
+        rgba(0,0,0,0.02) 8px,
+        rgba(0,0,0,0.02) 10px
+      );
+      pointer-events: none;
+      border-radius: inherit;
+    }
+
+    /* Button shine */
+    .btn {
+      position: relative;
+      overflow: hidden;
+    }
+    .btn::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 60%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+      transition: left 0.45s;
+    }
+    .btn:hover::after { left: 120%; }
+
+    /* Badge pulse */
+    .badge {
+      animation: badgePulse 2s ease-in-out infinite;
+    }
+    @keyframes badgePulse {
+      0%, 100% { box-shadow: 3px 3px 0 #000; }
+      50% { box-shadow: 3px 3px 0 #000, 0 0 0 6px rgba(250,204,21,0.35); }
+    }
+
+    /* Section title wobble on hover */
+    .section-title h2:hover {
+      transform: rotate(-2deg) scale(1.03);
+      transition: transform 0.2s;
+    }
+
+    /* Tool card POW bounce */
+    .tool-card::after {
+      animation: powBounce 2.5s ease-in-out infinite;
+    }
+    @keyframes powBounce {
+      0%, 100% { transform: rotate(8deg) scale(1); }
+      50% { transform: rotate(12deg) scale(1.08); }
+    }
+
+    /* Progress circle pop when active */
+    .p-step.active .circle {
+      animation: circlePop 0.4s cubic-bezier(0.34, 1.4, 0.64, 1);
+    }
+    @keyframes circlePop {
+      from { transform: scale(0.5); }
+      to { transform: scale(1.15); }
+    }
+
+    /* FAQ open smoother */
+    .faq-item {
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .faq-item.open {
+      box-shadow: 6px 6px 0 var(--red);
+      transform: translate(-2px, -2px);
+    }
+    .faq-item.open .faq-icon {
+      transform: rotate(45deg);
+      display: inline-block;
+      transition: transform 0.25s;
+    }
+
+    /* Nav logo glitch-ish */
+    .logo {
+      transition: text-shadow 0.2s;
+    }
+    .logo:hover {
+      text-shadow: 3px 3px 0 var(--red), -1px -1px 0 var(--blue);
+    }
+
+    /* Fix mobile overlap */
+    @media (max-width: 768px) {
+      .sticker { display: none; }
+      .spidey { display: none; }
+      .burst { opacity: 0.08; font-size: 4rem; }
+      .hero { padding: 1.5rem 4% 1rem; }
+      .hero-panel { padding: 1.5rem 1.2rem; }
+      section { padding: 1.75rem 4%; }
+      .tool-card::after { font-size: 1.1rem; top: -14px; right: 10px; }
+      nav { padding: 0.65rem 4%; }
+      .logo { font-size: 1.3rem; }
+    }
+
+    /* Prevent horizontal scroll from shadows */
+    body { overflow-x: hidden; }
+    .panels, .strip, .tool-wrap, .faq-list, .about-box, .hero {
+      max-width: 100%;
+    }
+
+
+    
+    /* ===== Rain effect (visible) ===== */
+    .rain-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .rain-drop {
+      position: absolute;
+      top: -50px;
+      width: 3px;
+      border-radius: 3px;
+      background: linear-gradient(to bottom, rgba(37,99,235,0), rgba(37,99,235,0.85), rgba(225,29,72,0.7));
+      animation: rainFall linear infinite;
+      box-shadow: 0 0 4px rgba(37,99,235,0.4);
+    }
+    @keyframes rainFall {
+      0%   { transform: translateY(0) translateX(0); opacity: 0; }
+      8%   { opacity: 1; }
+      85%  { opacity: 0.7; }
+      100% { transform: translateY(105vh) translateX(25px); opacity: 0; }
+    }
+    /* Pure CSS rain fallback (no JS needed) */
+    .rain-css {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      background-image:
+        linear-gradient(180deg, transparent 0%, rgba(37,99,235,0.55) 50%, transparent 100%),
+        linear-gradient(180deg, transparent 0%, rgba(225,29,72,0.4) 50%, transparent 100%),
+        linear-gradient(180deg, transparent 0%, rgba(37,99,235,0.5) 50%, transparent 100%),
+        linear-gradient(180deg, transparent 0%, rgba(59,130,246,0.45) 50%, transparent 100%),
+        linear-gradient(180deg, transparent 0%, rgba(225,29,72,0.35) 50%, transparent 100%);
+      background-size: 2px 28px, 2px 22px, 2px 32px, 2px 18px, 2px 26px;
+      background-position: 5% -30px, 15% -50px, 28% -20px, 42% -40px, 55% -25px;
+      background-repeat: repeat-y;
+      animation: cssRain 0.9s linear infinite;
+      opacity: 0.55;
+    }
+    .rain-css-2 {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      background-image:
+        linear-gradient(180deg, transparent 0%, rgba(37,99,235,0.5) 50%, transparent 100%),
+        linear-gradient(180deg, transparent 0%, rgba(225,29,72,0.45) 50%, transparent 100%),
+        linear-gradient(180deg, transparent 0%, rgba(37,99,235,0.4) 50%, transparent 100%),
+        linear-gradient(180deg, transparent 0%, rgba(250,204,21,0.3) 50%, transparent 100%);
+      background-size: 2px 24px, 2px 30px, 2px 20px, 2px 16px;
+      background-position: 68% -35px, 78% -15px, 88% -45px, 95% -20px;
+      background-repeat: repeat-y;
+      animation: cssRain 1.15s linear infinite;
+      opacity: 0.5;
+    }
+    @keyframes cssRain {
+      from { background-position-y: -40px, -60px, -30px, -50px, -35px; }
+      to   { background-position-y: 100vh, 100vh, 100vh, 100vh, 100vh; }
+    }
+    section, footer {
+      position: relative;
+      z-index: 5;
+    }
+    nav { z-index: 100; }
+    .toast, .loader { z-index: 200; }
+    .spidey, .sticker { z-index: 6; }
+
+
+  </style>
+</head>
+<body>
+  <div class="rain-css" aria-hidden="true"></div>
+  <div class="rain-css-2" aria-hidden="true"></div>
+  <div class="rain-layer" id="rainLayer" aria-hidden="true"></div>
+  <div class="burst burst-1">✦</div>
+  <div class="burst burst-2">★</div>
+  <div class="burst burst-3">◆</div>
+  <div class="sticker sticker-1">BAM!</div>
+  <div class="sticker sticker-2">ZAP!</div>
+  <div class="sticker sticker-3">POW!</div>
+  <div class="sticker sticker-4">WOW!</div>
+
+  <img src="spiderman.jpg" alt="" class="spidey spidey-l" onerror="this.style.display='none'">
+  <img src="spiderman.jpg" alt="" class="spidey spidey-r" onerror="this.style.display='none'">
+
+  <nav>
+    <div class="logo">🕷️ Alight Premium</div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#features">Fitur</a></li>
+      <li><a href="#how">Cara Pakai</a></li>
+      <li><a href="#tool">Tools</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#about">Tentang</a></li>
+      <li><a href="#tool" class="nav-cta">Buat Premium!</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </nav>
+
+  <section class="hero" id="home">
+    <div class="hero-panel">
+      <div class="badge">⚡ API ONLINE · INSTANT!</div>
+      <h1>Unlock Alight Motion <span>Premium Instantly</span></h1>
+      <p>Upgrade akun jadi Premium secara otomatis. Unlimited layers, no watermark, full assets — gaya komik, hasil serius!</p>
+      <div class="hero-actions">
+        <a href="#tool" class="btn btn-primary">🚀 Buat Premium</a>
+        <a href="#how" class="btn btn-ghost">📖 Cara Pakai</a>
+      </div>
+      <div class="hero-tags" style="display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;margin-top:1.25rem;position:relative;z-index:1">
+        <span style="background:#fff;border:2px solid #000;border-radius:999px;padding:0.3rem 0.7rem;font-weight:700;font-size:0.8rem;box-shadow:2px 2px 0 #000">🕷️ Web Theme</span>
+        <span style="background:#fff;border:2px solid #000;border-radius:999px;padding:0.3rem 0.7rem;font-weight:700;font-size:0.8rem;box-shadow:2px 2px 0 #000">⚡ Instant</span>
+        <span style="background:#fff;border:2px solid #000;border-radius:999px;padding:0.3rem 0.7rem;font-weight:700;font-size:0.8rem;box-shadow:2px 2px 0 #000">🔒 Aman</span>
+        <span style="background:#fff;border:2px solid #000;border-radius:999px;padding:0.3rem 0.7rem;font-weight:700;font-size:0.8rem;box-shadow:2px 2px 0 #000">🎬 No WM</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="features">
+    <div class="section-title">
+      <h2>💥 Fitur Premium</h2>
+      <p>Semua kekuatan super untuk editing pro</p>
+    </div>
+    <div class="panels">
+      <div class="panel">
+        <span class="panel-icon">🎬</span>
+        <h3>Unlimited Layers</h3>
+        <p>Tambah layer tanpa batas. Cocok untuk proyek kompleks & efek berlapis.</p>
+      </div>
+      <div class="panel">
+        <span class="panel-icon">💧</span>
+        <h3>No Watermark</h3>
+        <p>Export video bersih tanpa watermark. Siap publish ke mana saja.</p>
+      </div>
+      <div class="panel">
+        <span class="panel-icon">🎨</span>
+        <h3>Full Assets</h3>
+        <p>Akses semua preset, effect, dan pro assets yang terkunci.</p>
+      </div>
+      <div class="panel">
+        <span class="panel-icon">⚡</span>
+        <h3>Aktivasi Instan</h3>
+        <p>Proses otomatis via API. Email + magic link, langsung aktif.</p>
+      </div>
+      <div class="panel">
+        <span class="panel-icon">🔒</span>
+        <h3>Aman & Stabil</h3>
+        <p>Metode magic link resmi. Tidak merusak akun.</p>
+      </div>
+      <div class="panel">
+        <span class="panel-icon">🌐</span>
+        <h3>Web & Bot</h3>
+        <p>Pakai web ini atau bot Telegram — terserah kamu!</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="section-title">
+      <h2>📖 Cara Pakai</h2>
+      <p>Cuma 3 langkah — gampang kayak komik strip!</p>
+    </div>
+    <div class="strip">
+      <div class="strip-cell">
+        <div class="strip-num">1</div>
+        <h3>Masukkan Email</h3>
+        <p>Isi Gmail yang terhubung ke akun Alight Motion.</p>
+      </div>
+      <div class="strip-cell">
+        <div class="strip-num">2</div>
+        <h3>Ambil Magic Link</h3>
+        <p>Cek Inbox / Spam Gmail, salin magic link-nya.</p>
+      </div>
+      <div class="strip-cell">
+        <div class="strip-num">3</div>
+        <h3>Verifikasi</h3>
+        <p>Tempel link, klik verifikasi — BOOM! Premium aktif.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="tool">
+    <div class="section-title">
+      <h2>🛠️ Create Premium</h2>
+      <p>Isi form di bawah — aksi dimulai!</p>
+    </div>
+    <div class="tool-wrap">
+      <div class="tool-card">
+        <div class="tool-header">
+          <span class="mascot">🕷️</span>
+          <h3>Alight Motion Premium</h3>
+          <p>Auto send & verify magic link</p>
+        </div>
+
+        <div class="progress">
+          <div class="progress-fill" id="progressFill"></div>
+          <div class="p-step active" id="s1"><div class="circle">1</div><span>Email</span></div>
+          <div class="p-step" id="s2"><div class="circle">2</div><span>Link</span></div>
+          <div class="p-step" id="s3"><div class="circle">3</div><span>Selesai</span></div>
+        </div>
+
+        <div class="working" id="working">
+          <span class="working-emoji" id="workEmoji">🕷️</span>
+          <div class="working-title" id="workTitle">Mengirim magic link...</div>
+          <div class="working-sub" id="workSub">Tunggu sebentar, pahlawan!</div>
+        </div>
+
+        <div id="panel1">
+          <div class="form-group">
+            <label>📧 Alamat Gmail</label>
+            <input type="email" id="email" placeholder="agaahost@gmail.com" autocomplete="email">
+            <p class="form-hint">Pakai Gmail asli yang terhubung Alight Motion. Cek Spam juga ya!</p>
+          </div>
+          <button class="btn btn-primary btn-full" onclick="sendLink()">🚀 Kirim Magic Link</button>
+        </div>
+
+        <div id="panel2" style="display:none">
+          <div class="form-group">
+            <label>🔗 Paste Magic Link</label>
+            <textarea id="link" placeholder="Tempel magic link dari email..."></textarea>
+          </div>
+          <button class="btn btn-blue btn-full" onclick="verify()">✅ Verifikasi & Aktifkan</button>
+          <button class="btn btn-ghost btn-full" onclick="reset()">↺ Ulangi</button>
+        </div>
+
+        <div id="panel3" style="display:none">
+          <div id="final"></div>
+          <button class="btn btn-yellow btn-full" style="margin-top:1rem" onclick="reset()">🎬 Buat Akun Lain</button>
+        </div>
+
+        <div class="result" id="result"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="section-title">
+      <h2>❓ FAQ</h2>
+      <p>Pertanyaan yang sering muncul</p>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)"><span>Apakah ini aman?</span><span class="faq-icon">+</span></button>
+        <div class="faq-a"><p>Ya. Pakai magic link resmi Alight Motion. Tidak minta password.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)"><span>Email tidak masuk?</span><span class="faq-icon">+</span></button>
+        <div class="faq-a"><p>Cek Spam & Promosi. Aktifkan sinkronisasi Gmail. Jangan spam request — API ada cooldown ±2 menit.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)"><span>Berapa lama premium aktif?</span><span class="faq-icon">+</span></button>
+        <div class="faq-a"><p>Mengikuti ketentuan Alight Motion. Umumnya bertahan selama akun dipakai normal.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)"><span>Bisa di iOS & Android?</span><span class="faq-icon">+</span></button>
+        <div class="faq-a"><p>Bisa. Login dengan akun yang sama di perangkat mana pun.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="section-title">
+      <h2>🦸 Tentang</h2>
+    </div>
+    <div class="about-box">
+      <h3>Alight Premium Comic Edition</h3>
+      <p>Layanan auto unlock Premium Alight Motion via API. Cepat, simpel, dan sekarang bergaya komik!</p>
+      <p>Dibuat berdasarkan SC @MAKLOKNTLL</p>
+      <div class="dev-row">
+        <a href="https://t.me/MAKLOKNTLL" target="_blank" class="dev-chip">👤 @MAKLOKNTLL</a>
+        <a href="https://t.me/AboutAgaahostt" target="_blank" class="dev-chip">📢 Channel Telegram</a>
+        <a href="https://whatsapp.com/channel/0029VbCqBnS05MUmCe6G2y13" target="_blank" rel="noopener" class="dev-chip">💬 Saluran WhatsApp</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="logo">🕷️ Alight Premium</div>
+    <p>agaahost · Auto Unlock Alight Motion</p>
+    <div class="footer-links">
+      <a href="#home">Home</a>
+      <a href="#tool">Tools</a>
+      <a href="#faq">FAQ</a>
+      <a href="https://t.me/AboutAgaahostt" target="_blank">Dev</a>
+      <a href="https://whatsapp.com/channel/0029VbCqBnS05MUmCe6G2y13" target="_blank" rel="noopener">WhatsApp</a>
+    </div>
+    <div class="copy">© 2026 Alight Premium · by Agaahost!</div>
+  </footer>
+
+  <div class="toast" id="toast"><span id="toastIcon">💥</span><span id="toastMsg"></span></div>
+  <div class="loader" id="loader">
+    <div class="loader-emoji">🕷️</div>
+    <div class="loader-text">LOADING...</div>
+  </div>
+
+  <script>
+    // ========= Lapisan proteksi kredensial API =========
+    // CATATAN JUJUR: ini memperkeruh/mempersulit, BUKAN mengunci total.
+    // Kode JS yang jalan di browser selalu bisa dibaca mesin/orang yang niat.
+    (function () {
+      const _pw = ['i','w','4','w','V','1','-','s','e','r','v','e','r','i','w','a','w','-','9','f','2','0','2','6','-','x','q'].join('');
+
+      // String kredensial dipecah jadi beberapa segmen acak
+      const _aParts = ['AQNAByUL', 'AlwEAh9L', 'AxoFTwBI', 'W0hbVA=='];
+      const _kParts = ['GARG'];
+
+      const _xor = (b64) => {
+        const bin = atob(b64);
+        let out = '';
+        for (let i = 0; i < bin.length; i++) {
+          out += String.fromCharCode(bin.charCodeAt(i) ^ _pw.charCodeAt(i % _pw.length));
+        }
+        return out;
+      };
+
+      let _tripped = false;
+      const _trap = () => { _tripped = true; };
+
+      // --- Jebakan 1: timing debugger ---
+      setInterval(() => {
+        const t0 = performance.now();
+        // eslint-disable-next-line no-debugger
+        debugger;
+        if (performance.now() - t0 > 100) _trap();
+      }, 1200);
+
+      // --- Jebakan 2: deteksi devtools lewat ukuran window ---
+      setInterval(() => {
+        const threshold = 160;
+        const wDiff = window.outerWidth - window.innerWidth;
+        const hDiff = window.outerHeight - window.innerHeight;
+        if (wDiff > threshold || hDiff > threshold) _trap();
+      }, 1200);
+
+      // --- Jebakan 3: deteksi console dibuka lewat getter pada objek yang dicetak ---
+      const _bait = {};
+      Object.defineProperty(_bait, 'id', {
+        get() { _trap(); return 'devtools'; }
+      });
+      setInterval(() => { try { console.log('%c', _bait); } catch (e) {} }, 1500);
+
+      // --- Jebakan 4: deteksi override console.log / console.table dsb ---
+      const _origLog = console.log;
+      setInterval(() => {
+        if (console.log !== _origLog) _trap();
+      }, 1500);
+
+      // --- Jebakan 5: cegah klik kanan / shortcut devtools umum ---
+      document.addEventListener('contextmenu', (e) => e.preventDefault());
+      document.addEventListener('keydown', (e) => {
+        const k = e.key ? e.key.toUpperCase() : '';
+        if (
+          e.key === 'F12' ||
+          (e.ctrlKey && e.shiftKey && (k === 'I' || k === 'J' || k === 'C')) ||
+          (e.ctrlKey && k === 'U')
+        ) {
+          e.preventDefault();
+          _trap();
+        }
+      });
+
+      window.__getApiCreds = function () {
+        if (_tripped) return { API: '', KEY: '' };
+        try {
+          return { API: _xor(_aParts.join('')), KEY: _xor(_kParts.join('')) };
+        } catch (e) {
+          return { API: '', KEY: '' };
+        }
+      };
+    })();
+
+    const { API, KEY } = window.__getApiCreds();
+    let email = '';
+
+    // Nav
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('navLinks');
+    hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
+    document.querySelectorAll('.nav-links a').forEach(a => {
+      a.addEventListener('click', () => navLinks.classList.remove('open'));
+    });
+
+    function toast(msg, type = 'info') {
+      const t = document.getElementById('toast');
+      const icons = { success: '✅', error: '💥', info: '💬' };
+      document.getElementById('toastIcon').textContent = icons[type] || '💬';
+      document.getElementById('toastMsg').textContent = msg;
+      t.className = `toast ${type} show`;
+      setTimeout(() => t.classList.remove('show'), 3800);
+    }
+
+    function loader(show, text = 'LOADING...') {
+      const l = document.getElementById('loader');
+      l.querySelector('.loader-text').textContent = text;
+      l.classList.toggle('active', show);
+    }
+
+    function showWork(emoji, title, sub) {
+      document.getElementById('workEmoji').textContent = emoji;
+      document.getElementById('workTitle').textContent = title;
+      document.getElementById('workSub').textContent = sub;
+      document.getElementById('working').classList.add('active');
+    }
+    function hideWork() {
+      document.getElementById('working').classList.remove('active');
+    }
+
+    function setStep(n) {
+      document.getElementById('panel1').style.display = n === 1 ? 'block' : 'none';
+      document.getElementById('panel2').style.display = n === 2 ? 'block' : 'none';
+      document.getElementById('panel3').style.display = n === 3 ? 'block' : 'none';
+      document.getElementById('progressFill').style.width = n === 1 ? '0%' : n === 2 ? '50%' : '100%';
+      [1,2,3].forEach(i => {
+        const el = document.getElementById('s' + i);
+        el.classList.remove('active', 'done');
+        if (i < n) el.classList.add('done');
+        if (i === n) el.classList.add('active');
+      });
+    }
+
+    function showResult(html, type) {
+      const r = document.getElementById('result');
+      r.className = `result ${type} show`;
+      r.innerHTML = html;
+    }
+    function hideResult() {
+      document.getElementById('result').className = 'result';
+    }
+
+    function mask(e) {
+      if (!e || !e.includes('@')) return e;
+      const [n, d] = e.split('@');
+      if (n.length <= 2) return n[0] + '***@' + d;
+      return n[0] + '*'.repeat(Math.min(n.length - 2, 5)) + n.slice(-1) + '@' + d;
+    }
+
+    async function sendLink() {
+      const val = document.getElementById('email').value.trim();
+      if (!val || !val.includes('@') || !val.includes('.')) {
+        toast('Format email tidak valid!', 'error');
+        return;
+      }
+      email = val;
+      hideResult();
+      document.getElementById('panel1').style.display = 'none';
+      showWork('🕷️', 'Mengirim magic link...', 'Ke ' + mask(email));
+      loader(true, 'KIRIM LINK...');
+
+      try {
+        const res = await fetch(`${API}/alight/send?apikey=${KEY}&email=${encodeURIComponent(email)}`, {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' }
+        });
+        const text = await res.text();
+        let data;
+        try { data = JSON.parse(text); } catch { data = { message: text }; }
+
+        if (res.status === 429 || (data && /tunggu|limit|cooldown/i.test(String(data.error || data.message || '')))) {
+          throw new Error(data.error || data.message || 'Tunggu beberapa menit sebelum kirim ulang');
+        }
+        if (!res.ok || data.status === false) {
+          throw new Error(data.error || data.message || 'Gagal mengirim link');
+        }
+
+        loader(false);
+        hideWork();
+        setStep(2);
+        const msg = data.message || 'Magic link berhasil dikirim!';
+        toast(msg, 'success');
+        showResult(
+          '✅ <b>' + msg + '</b><br><br>' +
+          '📧 <b>' + mask(email) + '</b><br><br>' +
+          '1. Buka Gmail<br>2. Cek <b>Inbox + Spam + Promosi</b><br>3. Salin magic link<br>4. Tempel di bawah',
+          'info'
+        );
+      } catch (err) {
+        loader(false);
+        hideWork();
+        document.getElementById('panel1').style.display = 'block';
+        setStep(1);
+        toast(err.message || 'Gagal', 'error');
+        showResult('💥 ' + (err.message || 'Gagal menghubungi server'), 'error');
+      }
+    }
+
+    async function verify() {
+      const link = document.getElementById('link').value.trim();
+      if (!link || link.length < 15) {
+        toast('Magic link tidak valid!', 'error');
+        return;
+      }
+      hideResult();
+      document.getElementById('panel2').style.display = 'none';
+      showWork('💥', 'Verifikasi...', 'Mengaktifkan Premium');
+      loader(true, 'VERIFY...');
+
+      try {
+        const res = await fetch(`${API}/alight/verify?apikey=${KEY}&email=${encodeURIComponent(email)}&link=${encodeURIComponent(link)}`, {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' }
+        });
+        const text = await res.text();
+        let data;
+        try { data = JSON.parse(text); } catch { data = { message: text }; }
+
+        loader(false);
+        hideWork();
+
+        const msg = data.message || data.result || data.error || text || 'Selesai';
+        const failed = !res.ok || data.status === false || /gagal|invalid|expired|error/i.test(String(msg));
+
+        if (failed) {
+          document.getElementById('panel2').style.display = 'block';
+          setStep(2);
+          toast(msg, 'error');
+          showResult('💥 ' + msg, 'error');
+          return;
+        }
+
+        setStep(3);
+        document.getElementById('final').innerHTML = `
+          <span class="success-icon">🎉</span>
+          <div class="result success show" style="text-align:center">
+            <strong style="font-family:Bangers,system-ui;font-size:1.4rem;letter-spacing:1px">BOOM! BERHASIL!</strong><br>
+            ${msg}<br><br>
+            <b>Email:</b> ${mask(email)}<br>
+            <b>Status:</b> PREMIUM ACTIVE
+          </div>`;
+        toast('Premium aktif!', 'success');
+      } catch (err) {
+        loader(false);
+        hideWork();
+        document.getElementById('panel2').style.display = 'block';
+        setStep(2);
+        toast(err.message || 'Gagal', 'error');
+        showResult('💥 ' + (err.message || 'Verifikasi gagal'), 'error');
+      }
+    }
+
+    function reset() {
+      email = '';
+      document.getElementById('email').value = '';
+      document.getElementById('link').value = '';
+      hideResult();
+      hideWork();
+      setStep(1);
+    }
+
+    function toggleFaq(btn) {
+      const item = btn.parentElement;
+      const open = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!open) item.classList.add('open');
+    }
+
+    
+    // Rain effect
+    (function makeRain() {
+      const layer = document.getElementById('rainLayer');
+      if (!layer) return;
+      const count = Math.min(55, Math.floor(window.innerWidth / 14));
+      for (let i = 0; i < count; i++) {
+        const d = document.createElement('div');
+        d.className = 'rain-drop';
+        const left = Math.random() * 100;
+        const h = 12 + Math.random() * 22;
+        const dur = 0.7 + Math.random() * 1.1;
+        const delay = Math.random() * 3;
+        d.style.left = left + '%';
+        d.style.height = h + 'px';
+        d.style.animationDuration = dur + 's';
+        d.style.animationDelay = delay + 's';
+        d.style.opacity = (0.35 + Math.random() * 0.45).toFixed(2);
+        layer.appendChild(d);
+      }
+    })();
+
+    document.getElementById('email').addEventListener('keypress', e => {
+      if (e.key === 'Enter') sendLink();
+    });
+  </script>
+</body>
+</html>
